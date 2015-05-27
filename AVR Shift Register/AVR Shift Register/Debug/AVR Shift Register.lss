@@ -1,0 +1,516 @@
+
+AVR Shift Register.elf:     file format elf32-avr
+
+Sections:
+Idx Name          Size      VMA       LMA       File off  Algn
+  0 .text         000002a0  00000000  00000000  00000094  2**1
+                  CONTENTS, ALLOC, LOAD, READONLY, CODE
+  1 .data         00000016  00800060  000002a0  00000334  2**0
+                  CONTENTS, ALLOC, LOAD, DATA
+  2 .bss          00000004  00800076  00800076  0000034a  2**0
+                  ALLOC
+  3 .comment      00000030  00000000  00000000  0000034a  2**0
+                  CONTENTS, READONLY
+  4 .debug_aranges 00000058  00000000  00000000  0000037a  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  5 .debug_info   0000028d  00000000  00000000  000003d2  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  6 .debug_abbrev 00000179  00000000  00000000  0000065f  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  7 .debug_line   000001df  00000000  00000000  000007d8  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  8 .debug_frame  00000100  00000000  00000000  000009b8  2**2
+                  CONTENTS, READONLY, DEBUGGING
+  9 .debug_str    00000240  00000000  00000000  00000ab8  2**0
+                  CONTENTS, READONLY, DEBUGGING
+ 10 .debug_loc    000001af  00000000  00000000  00000cf8  2**0
+                  CONTENTS, READONLY, DEBUGGING
+ 11 .debug_ranges 00000048  00000000  00000000  00000ea7  2**0
+                  CONTENTS, READONLY, DEBUGGING
+
+Disassembly of section .text:
+
+00000000 <__vectors>:
+   0:	0e c0       	rjmp	.+28     	; 0x1e <__ctors_end>
+   2:	26 c0       	rjmp	.+76     	; 0x50 <__bad_interrupt>
+   4:	25 c0       	rjmp	.+74     	; 0x50 <__bad_interrupt>
+   6:	24 c0       	rjmp	.+72     	; 0x50 <__bad_interrupt>
+   8:	23 c0       	rjmp	.+70     	; 0x50 <__bad_interrupt>
+   a:	fb c0       	rjmp	.+502    	; 0x202 <__vector_5>
+   c:	21 c0       	rjmp	.+66     	; 0x50 <__bad_interrupt>
+   e:	20 c0       	rjmp	.+64     	; 0x50 <__bad_interrupt>
+  10:	60 c0       	rjmp	.+192    	; 0xd2 <__vector_8>
+  12:	1e c0       	rjmp	.+60     	; 0x50 <__bad_interrupt>
+  14:	1d c0       	rjmp	.+58     	; 0x50 <__bad_interrupt>
+  16:	1c c0       	rjmp	.+56     	; 0x50 <__bad_interrupt>
+  18:	1b c0       	rjmp	.+54     	; 0x50 <__bad_interrupt>
+  1a:	1a c0       	rjmp	.+52     	; 0x50 <__bad_interrupt>
+  1c:	19 c0       	rjmp	.+50     	; 0x50 <__bad_interrupt>
+
+0000001e <__ctors_end>:
+  1e:	11 24       	eor	r1, r1
+  20:	1f be       	out	0x3f, r1	; 63
+  22:	cf ed       	ldi	r28, 0xDF	; 223
+  24:	cd bf       	out	0x3d, r28	; 61
+
+00000026 <__do_copy_data>:
+  26:	10 e0       	ldi	r17, 0x00	; 0
+  28:	a0 e6       	ldi	r26, 0x60	; 96
+  2a:	b0 e0       	ldi	r27, 0x00	; 0
+  2c:	e0 ea       	ldi	r30, 0xA0	; 160
+  2e:	f2 e0       	ldi	r31, 0x02	; 2
+  30:	02 c0       	rjmp	.+4      	; 0x36 <__do_copy_data+0x10>
+  32:	05 90       	lpm	r0, Z+
+  34:	0d 92       	st	X+, r0
+  36:	a6 37       	cpi	r26, 0x76	; 118
+  38:	b1 07       	cpc	r27, r17
+  3a:	d9 f7       	brne	.-10     	; 0x32 <__do_copy_data+0xc>
+
+0000003c <__do_clear_bss>:
+  3c:	20 e0       	ldi	r18, 0x00	; 0
+  3e:	a6 e7       	ldi	r26, 0x76	; 118
+  40:	b0 e0       	ldi	r27, 0x00	; 0
+  42:	01 c0       	rjmp	.+2      	; 0x46 <.do_clear_bss_start>
+
+00000044 <.do_clear_bss_loop>:
+  44:	1d 92       	st	X+, r1
+
+00000046 <.do_clear_bss_start>:
+  46:	aa 37       	cpi	r26, 0x7A	; 122
+  48:	b2 07       	cpc	r27, r18
+  4a:	e1 f7       	brne	.-8      	; 0x44 <.do_clear_bss_loop>
+  4c:	24 d0       	rcall	.+72     	; 0x96 <main>
+  4e:	26 c1       	rjmp	.+588    	; 0x29c <_exit>
+
+00000050 <__bad_interrupt>:
+  50:	d7 cf       	rjmp	.-82     	; 0x0 <__vectors>
+
+00000052 <initialise_74HC595>:
+#define HC595DataHigh() (shift_register_PORT |=  (1<<DS_pin)) //just some basic macros
+#define HC595DataLow()  (shift_register_PORT &= ~(1<<DS_pin))
+
+void initialise_74HC595()
+{
+   shift_register_DDR|=((1<<SHCP_pin)|(1<<STCP_pin)|(1<<DS_pin));	//sets all the pins to output
+  52:	87 b3       	in	r24, 0x17	; 23
+  54:	86 61       	ori	r24, 0x16	; 22
+  56:	87 bb       	out	0x17, r24	; 23
+  58:	08 95       	ret
+
+0000005a <pulse_shift_clock>:
+}
+
+
+void pulse_shift_clock()	//sends a serial pulse to the shift clock
+{
+   shift_register_PORT |=  (1<<SHCP_pin);
+  5a:	c2 9a       	sbi	0x18, 2	; 24
+
+   shift_register_PORT &= ~(1<<SHCP_pin);
+  5c:	c2 98       	cbi	0x18, 2	; 24
+  5e:	08 95       	ret
+
+00000060 <write_74HC595>:
+
+}
+
+void write_74HC595(uint8_t data)
+{
+  60:	cf 93       	push	r28
+  62:	df 93       	push	r29
+  64:	d8 2f       	mov	r29, r24
+    PORTB &= ~(1<<STCP_pin);	//set the "latch" low
+  66:	c4 98       	cbi	0x18, 4	; 24
+  68:	c8 e0       	ldi	r28, 0x08	; 8
+    
+    for(uint8_t i=0; i<8; i++)	//send the data serially
+    {
+        if(data & 0b10000000)   //Mask out the MSB bit of the data
+  6a:	dd 23       	and	r29, r29
+  6c:	14 f4       	brge	.+4      	; 0x72 <write_74HC595+0x12>
+		//if(data & 0b00000001)
+        {
+            HC595DataHigh();    //if the bit is high, set the data pin high
+  6e:	c1 9a       	sbi	0x18, 1	; 24
+  70:	01 c0       	rjmp	.+2      	; 0x74 <write_74HC595+0x14>
+        }
+      
+        else
+        {
+            HC595DataLow();     //if bit is low, set the data pin low
+  72:	c1 98       	cbi	0x18, 1	; 24
+        }
+
+        pulse_shift_clock();	//send a serial pulse
+  74:	f2 df       	rcall	.-28     	; 0x5a <pulse_shift_clock>
+        data = data<<1;			//shift the data and do it again
+  76:	dd 0f       	add	r29, r29
+  78:	c1 50       	subi	r28, 0x01	; 1
+
+void write_74HC595(uint8_t data)
+{
+    PORTB &= ~(1<<STCP_pin);	//set the "latch" low
+    
+    for(uint8_t i=0; i<8; i++)	//send the data serially
+  7a:	b9 f7       	brne	.-18     	; 0x6a <write_74HC595+0xa>
+        data = data<<1;			//shift the data and do it again
+		//data = data>>1;
+
+   }
+
+   PORTB |= (1<<STCP_pin);		//set the latch high to display the results
+  7c:	c4 9a       	sbi	0x18, 4	; 24
+}
+  7e:	df 91       	pop	r29
+  80:	cf 91       	pop	r28
+  82:	08 95       	ret
+
+00000084 <initialise_ADC>:
+//        I'd like to do a small research to figure out if he is using the same pin as mine.
+//        Beside, I should really read the ATTiny's datasheet about how it works.
+//        We should disable the Reset pin reset function. In oder to save a 10K resistor
+void initialise_ADC(void)
+{
+	ADCSRA |= 1<<ADEN | 1<<ADIE | 1<<ADPS0 | 1<<ADPS2;
+  84:	86 b1       	in	r24, 0x06	; 6
+  86:	8d 68       	ori	r24, 0x8D	; 141
+  88:	86 b9       	out	0x06, r24	; 6
+	ADMUX  |= 1<<MUX1 | 1<<MUX0;						// PB3 as ADC pin
+  8a:	87 b1       	in	r24, 0x07	; 7
+  8c:	83 60       	ori	r24, 0x03	; 3
+  8e:	87 b9       	out	0x07, r24	; 7
+  90:	08 95       	ret
+
+00000092 <start_conversion>:
+}
+
+void start_conversion(void)
+{
+	ADCSRA |= 1<<ADSC;
+  92:	36 9a       	sbi	0x06, 6	; 6
+  94:	08 95       	ret
+
+00000096 <main>:
+}
+
+
+int main(void)
+{
+	sei();
+  96:	78 94       	sei
+	initialise_74HC595();
+  98:	dc df       	rcall	.-72     	; 0x52 <initialise_74HC595>
+	initialise_ADC();
+  9a:	f4 df       	rcall	.-24     	; 0x84 <initialise_ADC>
+	start_conversion();
+  9c:	fa df       	rcall	.-12     	; 0x92 <start_conversion>
+	
+	DDRB |= (1<<PB0);									// PWM control pin, as output
+  9e:	b8 9a       	sbi	0x17, 0	; 23
+	TCCR0A |= (1<<COM0A1) | (1<<WGM00) | (1<<WGM01);	// fast PWM mode + small settings
+  a0:	8a b5       	in	r24, 0x2a	; 42
+  a2:	83 68       	ori	r24, 0x83	; 131
+  a4:	8a bd       	out	0x2a, r24	; 42
+	
+	TIMSK |= (1<<TOIE0);								// Here some differences.
+  a6:	89 b7       	in	r24, 0x39	; 57
+  a8:	82 60       	ori	r24, 0x02	; 2
+  aa:	89 bf       	out	0x39, r24	; 57
+	
+	OCR0A = 125;										// should later be comment out to let interrupt handle this problem.
+  ac:	8d e7       	ldi	r24, 0x7D	; 125
+  ae:	89 bd       	out	0x29, r24	; 41
+	//OCR0A = 191;//75/100*255;
+	
+	TCCR0B |= (1<<CS00);								// no prescaler
+  b0:	83 b7       	in	r24, 0x33	; 51
+  b2:	81 60       	ori	r24, 0x01	; 1
+  b4:	83 bf       	out	0x33, r24	; 51
+	#else
+		//round up by default
+		__ticks_dc = (uint32_t)(ceil(fabs(__tmp)));
+	#endif
+
+	__builtin_avr_delay_cycles(__ticks_dc);
+  b6:	87 ea       	ldi	r24, 0xA7	; 167
+  b8:	91 e6       	ldi	r25, 0x61	; 97
+  ba:	01 97       	sbiw	r24, 0x01	; 1
+  bc:	f1 f7       	brne	.-4      	; 0xba <main+0x24>
+  be:	00 c0       	rjmp	.+0      	; 0xc0 <main+0x2a>
+  c0:	00 00       	nop
+	while(1)
+	{
+		
+		_delay_ms(100);
+		
+		dutyCycle += 5;
+  c2:	80 91 74 00 	lds	r24, 0x0074
+  c6:	8b 5f       	subi	r24, 0xFB	; 251
+  c8:	80 93 74 00 	sts	0x0074, r24
+		if(dutyCycle > 255)
+  cc:	80 91 74 00 	lds	r24, 0x0074
+  d0:	f2 cf       	rjmp	.-28     	; 0xb6 <main+0x20>
+
+000000d2 <__vector_8>:
+}
+
+
+
+ISR(ADC_vect)
+{
+  d2:	1f 92       	push	r1
+  d4:	0f 92       	push	r0
+  d6:	0f b6       	in	r0, 0x3f	; 63
+  d8:	0f 92       	push	r0
+  da:	11 24       	eor	r1, r1
+  dc:	0f 93       	push	r16
+  de:	1f 93       	push	r17
+  e0:	2f 93       	push	r18
+  e2:	3f 93       	push	r19
+  e4:	4f 93       	push	r20
+  e6:	5f 93       	push	r21
+  e8:	6f 93       	push	r22
+  ea:	7f 93       	push	r23
+  ec:	8f 93       	push	r24
+  ee:	9f 93       	push	r25
+  f0:	af 93       	push	r26
+  f2:	bf 93       	push	r27
+  f4:	ef 93       	push	r30
+  f6:	ff 93       	push	r31
+	voltage_reading = ADC;
+  f8:	84 b1       	in	r24, 0x04	; 4
+  fa:	95 b1       	in	r25, 0x05	; 5
+  fc:	90 93 77 00 	sts	0x0077, r25
+ 100:	80 93 76 00 	sts	0x0076, r24
+	//firstdigit = ((voltage_reading * 5000L / 1023)+500) / 1000;
+	// voltage_reading 0 ~ 1023.
+	firstdigit = ((voltage_reading * 10000L / 1023)+500) / 1000; //12V through voltage divider have a max. voltage 3.69V. equal to 755.71
+ 104:	80 91 76 00 	lds	r24, 0x0076
+ 108:	90 91 77 00 	lds	r25, 0x0077
+ 10c:	a0 e0       	ldi	r26, 0x00	; 0
+ 10e:	b0 e0       	ldi	r27, 0x00	; 0
+ 110:	88 0f       	add	r24, r24
+ 112:	99 1f       	adc	r25, r25
+ 114:	aa 1f       	adc	r26, r26
+ 116:	bb 1f       	adc	r27, r27
+ 118:	88 0f       	add	r24, r24
+ 11a:	99 1f       	adc	r25, r25
+ 11c:	aa 1f       	adc	r26, r26
+ 11e:	bb 1f       	adc	r27, r27
+ 120:	88 0f       	add	r24, r24
+ 122:	99 1f       	adc	r25, r25
+ 124:	aa 1f       	adc	r26, r26
+ 126:	bb 1f       	adc	r27, r27
+ 128:	88 0f       	add	r24, r24
+ 12a:	99 1f       	adc	r25, r25
+ 12c:	aa 1f       	adc	r26, r26
+ 12e:	bb 1f       	adc	r27, r27
+ 130:	ac 01       	movw	r20, r24
+ 132:	bd 01       	movw	r22, r26
+ 134:	44 0f       	add	r20, r20
+ 136:	55 1f       	adc	r21, r21
+ 138:	66 1f       	adc	r22, r22
+ 13a:	77 1f       	adc	r23, r23
+ 13c:	44 0f       	add	r20, r20
+ 13e:	55 1f       	adc	r21, r21
+ 140:	66 1f       	adc	r22, r22
+ 142:	77 1f       	adc	r23, r23
+ 144:	84 0f       	add	r24, r20
+ 146:	95 1f       	adc	r25, r21
+ 148:	a6 1f       	adc	r26, r22
+ 14a:	b7 1f       	adc	r27, r23
+ 14c:	ac 01       	movw	r20, r24
+ 14e:	bd 01       	movw	r22, r26
+ 150:	44 0f       	add	r20, r20
+ 152:	55 1f       	adc	r21, r21
+ 154:	66 1f       	adc	r22, r22
+ 156:	77 1f       	adc	r23, r23
+ 158:	44 0f       	add	r20, r20
+ 15a:	55 1f       	adc	r21, r21
+ 15c:	66 1f       	adc	r22, r22
+ 15e:	77 1f       	adc	r23, r23
+ 160:	84 0f       	add	r24, r20
+ 162:	95 1f       	adc	r25, r21
+ 164:	a6 1f       	adc	r26, r22
+ 166:	b7 1f       	adc	r27, r23
+ 168:	ac 01       	movw	r20, r24
+ 16a:	bd 01       	movw	r22, r26
+ 16c:	44 0f       	add	r20, r20
+ 16e:	55 1f       	adc	r21, r21
+ 170:	66 1f       	adc	r22, r22
+ 172:	77 1f       	adc	r23, r23
+ 174:	44 0f       	add	r20, r20
+ 176:	55 1f       	adc	r21, r21
+ 178:	66 1f       	adc	r22, r22
+ 17a:	77 1f       	adc	r23, r23
+ 17c:	84 0f       	add	r24, r20
+ 17e:	95 1f       	adc	r25, r21
+ 180:	a6 1f       	adc	r26, r22
+ 182:	b7 1f       	adc	r27, r23
+ 184:	ac 01       	movw	r20, r24
+ 186:	bd 01       	movw	r22, r26
+ 188:	44 0f       	add	r20, r20
+ 18a:	55 1f       	adc	r21, r21
+ 18c:	66 1f       	adc	r22, r22
+ 18e:	77 1f       	adc	r23, r23
+ 190:	44 0f       	add	r20, r20
+ 192:	55 1f       	adc	r21, r21
+ 194:	66 1f       	adc	r22, r22
+ 196:	77 1f       	adc	r23, r23
+ 198:	8c 01       	movw	r16, r24
+ 19a:	9d 01       	movw	r18, r26
+ 19c:	04 0f       	add	r16, r20
+ 19e:	15 1f       	adc	r17, r21
+ 1a0:	26 1f       	adc	r18, r22
+ 1a2:	37 1f       	adc	r19, r23
+ 1a4:	c9 01       	movw	r24, r18
+ 1a6:	b8 01       	movw	r22, r16
+ 1a8:	2f ef       	ldi	r18, 0xFF	; 255
+ 1aa:	33 e0       	ldi	r19, 0x03	; 3
+ 1ac:	40 e0       	ldi	r20, 0x00	; 0
+ 1ae:	50 e0       	ldi	r21, 0x00	; 0
+ 1b0:	37 d0       	rcall	.+110    	; 0x220 <__divmodsi4>
+ 1b2:	ca 01       	movw	r24, r20
+ 1b4:	b9 01       	movw	r22, r18
+ 1b6:	6c 50       	subi	r22, 0x0C	; 12
+ 1b8:	7e 4f       	sbci	r23, 0xFE	; 254
+ 1ba:	8f 4f       	sbci	r24, 0xFF	; 255
+ 1bc:	9f 4f       	sbci	r25, 0xFF	; 255
+ 1be:	28 ee       	ldi	r18, 0xE8	; 232
+ 1c0:	33 e0       	ldi	r19, 0x03	; 3
+ 1c2:	40 e0       	ldi	r20, 0x00	; 0
+ 1c4:	50 e0       	ldi	r21, 0x00	; 0
+ 1c6:	2c d0       	rcall	.+88     	; 0x220 <__divmodsi4>
+ 1c8:	20 93 79 00 	sts	0x0079, r18
+	write_74HC595(LED_patterns[firstdigit]);
+ 1cc:	e0 91 79 00 	lds	r30, 0x0079
+ 1d0:	f0 e0       	ldi	r31, 0x00	; 0
+ 1d2:	e0 5a       	subi	r30, 0xA0	; 160
+ 1d4:	ff 4f       	sbci	r31, 0xFF	; 255
+ 1d6:	80 81       	ld	r24, Z
+ 1d8:	43 df       	rcall	.-378    	; 0x60 <write_74HC595>
+	// TODO :   Add a variable to send back to main loop, in order to drive FAN with the Speed it should using.
+	ADCSRA |= 1<<ADSC;
+ 1da:	36 9a       	sbi	0x06, 6	; 6
+}
+ 1dc:	ff 91       	pop	r31
+ 1de:	ef 91       	pop	r30
+ 1e0:	bf 91       	pop	r27
+ 1e2:	af 91       	pop	r26
+ 1e4:	9f 91       	pop	r25
+ 1e6:	8f 91       	pop	r24
+ 1e8:	7f 91       	pop	r23
+ 1ea:	6f 91       	pop	r22
+ 1ec:	5f 91       	pop	r21
+ 1ee:	4f 91       	pop	r20
+ 1f0:	3f 91       	pop	r19
+ 1f2:	2f 91       	pop	r18
+ 1f4:	1f 91       	pop	r17
+ 1f6:	0f 91       	pop	r16
+ 1f8:	0f 90       	pop	r0
+ 1fa:	0f be       	out	0x3f, r0	; 63
+ 1fc:	0f 90       	pop	r0
+ 1fe:	1f 90       	pop	r1
+ 200:	18 95       	reti
+
+00000202 <__vector_5>:
+
+ISR(TIMER0_OVF_vect)
+{
+ 202:	1f 92       	push	r1
+ 204:	0f 92       	push	r0
+ 206:	0f b6       	in	r0, 0x3f	; 63
+ 208:	0f 92       	push	r0
+ 20a:	11 24       	eor	r1, r1
+ 20c:	8f 93       	push	r24
+	OCR0A = dutyCycle;
+ 20e:	80 91 74 00 	lds	r24, 0x0074
+ 212:	89 bd       	out	0x29, r24	; 41
+ 214:	8f 91       	pop	r24
+ 216:	0f 90       	pop	r0
+ 218:	0f be       	out	0x3f, r0	; 63
+ 21a:	0f 90       	pop	r0
+ 21c:	1f 90       	pop	r1
+ 21e:	18 95       	reti
+
+00000220 <__divmodsi4>:
+ 220:	05 2e       	mov	r0, r21
+ 222:	97 fb       	bst	r25, 7
+ 224:	16 f4       	brtc	.+4      	; 0x22a <__divmodsi4+0xa>
+ 226:	00 94       	com	r0
+ 228:	0f d0       	rcall	.+30     	; 0x248 <__negsi2>
+ 22a:	57 fd       	sbrc	r21, 7
+ 22c:	05 d0       	rcall	.+10     	; 0x238 <__divmodsi4_neg2>
+ 22e:	14 d0       	rcall	.+40     	; 0x258 <__udivmodsi4>
+ 230:	07 fc       	sbrc	r0, 7
+ 232:	02 d0       	rcall	.+4      	; 0x238 <__divmodsi4_neg2>
+ 234:	46 f4       	brtc	.+16     	; 0x246 <__divmodsi4_exit>
+ 236:	08 c0       	rjmp	.+16     	; 0x248 <__negsi2>
+
+00000238 <__divmodsi4_neg2>:
+ 238:	50 95       	com	r21
+ 23a:	40 95       	com	r20
+ 23c:	30 95       	com	r19
+ 23e:	21 95       	neg	r18
+ 240:	3f 4f       	sbci	r19, 0xFF	; 255
+ 242:	4f 4f       	sbci	r20, 0xFF	; 255
+ 244:	5f 4f       	sbci	r21, 0xFF	; 255
+
+00000246 <__divmodsi4_exit>:
+ 246:	08 95       	ret
+
+00000248 <__negsi2>:
+ 248:	90 95       	com	r25
+ 24a:	80 95       	com	r24
+ 24c:	70 95       	com	r23
+ 24e:	61 95       	neg	r22
+ 250:	7f 4f       	sbci	r23, 0xFF	; 255
+ 252:	8f 4f       	sbci	r24, 0xFF	; 255
+ 254:	9f 4f       	sbci	r25, 0xFF	; 255
+ 256:	08 95       	ret
+
+00000258 <__udivmodsi4>:
+ 258:	a1 e2       	ldi	r26, 0x21	; 33
+ 25a:	1a 2e       	mov	r1, r26
+ 25c:	aa 1b       	sub	r26, r26
+ 25e:	bb 1b       	sub	r27, r27
+ 260:	fd 01       	movw	r30, r26
+ 262:	0d c0       	rjmp	.+26     	; 0x27e <__udivmodsi4_ep>
+
+00000264 <__udivmodsi4_loop>:
+ 264:	aa 1f       	adc	r26, r26
+ 266:	bb 1f       	adc	r27, r27
+ 268:	ee 1f       	adc	r30, r30
+ 26a:	ff 1f       	adc	r31, r31
+ 26c:	a2 17       	cp	r26, r18
+ 26e:	b3 07       	cpc	r27, r19
+ 270:	e4 07       	cpc	r30, r20
+ 272:	f5 07       	cpc	r31, r21
+ 274:	20 f0       	brcs	.+8      	; 0x27e <__udivmodsi4_ep>
+ 276:	a2 1b       	sub	r26, r18
+ 278:	b3 0b       	sbc	r27, r19
+ 27a:	e4 0b       	sbc	r30, r20
+ 27c:	f5 0b       	sbc	r31, r21
+
+0000027e <__udivmodsi4_ep>:
+ 27e:	66 1f       	adc	r22, r22
+ 280:	77 1f       	adc	r23, r23
+ 282:	88 1f       	adc	r24, r24
+ 284:	99 1f       	adc	r25, r25
+ 286:	1a 94       	dec	r1
+ 288:	69 f7       	brne	.-38     	; 0x264 <__udivmodsi4_loop>
+ 28a:	60 95       	com	r22
+ 28c:	70 95       	com	r23
+ 28e:	80 95       	com	r24
+ 290:	90 95       	com	r25
+ 292:	9b 01       	movw	r18, r22
+ 294:	ac 01       	movw	r20, r24
+ 296:	bd 01       	movw	r22, r26
+ 298:	cf 01       	movw	r24, r30
+ 29a:	08 95       	ret
+
+0000029c <_exit>:
+ 29c:	f8 94       	cli
+
+0000029e <__stop_program>:
+ 29e:	ff cf       	rjmp	.-2      	; 0x29e <__stop_program>
