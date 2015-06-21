@@ -200,7 +200,7 @@ END GROUP
 .rela.plt
  *(.rela.plt)
 
-.text           0x00000000      0x376
+.text           0x00000000      0x390
  *(.vectors)
  .vectors       0x00000000       0x1e c:/program files (x86)/atmel/atmel toolchain/avr8 gcc/native/3.4.1061/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.8.1/../../../../avr/lib/avr25/tiny-stack/crttn25.o
                 0x00000000                __vector_default
@@ -287,33 +287,33 @@ END GROUP
  .text.start_conversion
                 0x00000092        0x4 AVR Shift Register.o
                 0x00000092                start_conversion
- .text.main     0x00000096       0x3c AVR Shift Register.o
+ .text.main     0x00000096       0x56 AVR Shift Register.o
                 0x00000096                main
  .text.__vector_8
-                0x000000d2      0x1b8 AVR Shift Register.o
-                0x000000d2                __vector_8
+                0x000000ec      0x1b8 AVR Shift Register.o
+                0x000000ec                __vector_8
  .text.__vector_5
-                0x0000028a       0x1e AVR Shift Register.o
-                0x0000028a                __vector_5
+                0x000002a4       0x1e AVR Shift Register.o
+                0x000002a4                __vector_5
  .text.avr-libc.fplib
-                0x000002a8        0x8 c:/program files (x86)/atmel/atmel toolchain/avr8 gcc/native/3.4.1061/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.8.1/../../../../avr/lib/avr25/tiny-stack\libm.a(cmpsf2.o)
-                0x000002a8                __nesf2
-                0x000002a8                __eqsf2
-                0x000002a8                __cmpsf2
-                0x000002a8                __ltsf2
-                0x000002a8                __lesf2
+                0x000002c2        0x8 c:/program files (x86)/atmel/atmel toolchain/avr8 gcc/native/3.4.1061/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.8.1/../../../../avr/lib/avr25/tiny-stack\libm.a(cmpsf2.o)
+                0x000002c2                __nesf2
+                0x000002c2                __eqsf2
+                0x000002c2                __cmpsf2
+                0x000002c2                __ltsf2
+                0x000002c2                __lesf2
  .text.avr-libc.fplib
-                0x000002b0       0x7a c:/program files (x86)/atmel/atmel toolchain/avr8 gcc/native/3.4.1061/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.8.1/../../../../avr/lib/avr25/tiny-stack\libm.a(floatsisf.o)
-                0x000002b0                __floatunsisf
-                0x000002b4                __floatsisf
+                0x000002ca       0x7a c:/program files (x86)/atmel/atmel toolchain/avr8 gcc/native/3.4.1061/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.8.1/../../../../avr/lib/avr25/tiny-stack\libm.a(floatsisf.o)
+                0x000002ca                __floatunsisf
+                0x000002ce                __floatsisf
  .text.avr-libc.fplib
-                0x0000032a       0x48 c:/program files (x86)/atmel/atmel toolchain/avr8 gcc/native/3.4.1061/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.8.1/../../../../avr/lib/avr25/tiny-stack\libm.a(fp_cmp.o)
-                0x0000032a                __fp_cmp
-                0x00000372                . = ALIGN (0x2)
+                0x00000344       0x48 c:/program files (x86)/atmel/atmel toolchain/avr8 gcc/native/3.4.1061/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.8.1/../../../../avr/lib/avr25/tiny-stack\libm.a(fp_cmp.o)
+                0x00000344                __fp_cmp
+                0x0000038c                . = ALIGN (0x2)
  *(.fini9)
- .fini9         0x00000372        0x0 c:/program files (x86)/atmel/atmel toolchain/avr8 gcc/native/3.4.1061/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.8.1/avr25/tiny-stack\libgcc.a(_exit.o)
-                0x00000372                _exit
-                0x00000372                exit
+ .fini9         0x0000038c        0x0 c:/program files (x86)/atmel/atmel toolchain/avr8 gcc/native/3.4.1061/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.8.1/avr25/tiny-stack\libgcc.a(_exit.o)
+                0x0000038c                _exit
+                0x0000038c                exit
  *(.fini9)
  *(.fini8)
  *(.fini8)
@@ -332,11 +332,11 @@ END GROUP
  *(.fini1)
  *(.fini1)
  *(.fini0)
- .fini0         0x00000372        0x4 c:/program files (x86)/atmel/atmel toolchain/avr8 gcc/native/3.4.1061/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.8.1/avr25/tiny-stack\libgcc.a(_exit.o)
+ .fini0         0x0000038c        0x4 c:/program files (x86)/atmel/atmel toolchain/avr8 gcc/native/3.4.1061/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.8.1/avr25/tiny-stack\libgcc.a(_exit.o)
  *(.fini0)
-                0x00000376                _etext = .
+                0x00000390                _etext = .
 
-.data           0x00800060       0x16 load address 0x00000376
+.data           0x00800060       0x16 load address 0x00000390
                 0x00800060                PROVIDE (__data_start, .)
  *(.data)
  *(.data*)
@@ -364,8 +364,8 @@ END GROUP
                 0x00800078                pwmFAN
                 0x00800079                firstdigit
                 0x0080007a                PROVIDE (__bss_end, .)
-                0x00000376                __data_load_start = LOADADDR (.data)
-                0x0000038c                __data_load_end = (__data_load_start + SIZEOF (.data))
+                0x00000390                __data_load_start = LOADADDR (.data)
+                0x000003a6                __data_load_end = (__data_load_start + SIZEOF (.data))
 
 .noinit         0x0080007a        0x0
                 0x0080007a                PROVIDE (__noinit_start, .)
@@ -439,26 +439,26 @@ END GROUP
 .debug_pubnames
  *(.debug_pubnames)
 
-.debug_info     0x00000000      0x28d
+.debug_info     0x00000000      0x207
  *(.debug_info .gnu.linkonce.wi.*)
- .debug_info    0x00000000      0x28d AVR Shift Register.o
+ .debug_info    0x00000000      0x207 AVR Shift Register.o
 
-.debug_abbrev   0x00000000      0x193
+.debug_abbrev   0x00000000      0x12b
  *(.debug_abbrev)
- .debug_abbrev  0x00000000      0x193 AVR Shift Register.o
+ .debug_abbrev  0x00000000      0x12b AVR Shift Register.o
 
-.debug_line     0x00000000      0x1ff
+.debug_line     0x00000000      0x18a
  *(.debug_line .debug_line.* .debug_line_end)
- .debug_line    0x00000000      0x1ff AVR Shift Register.o
+ .debug_line    0x00000000      0x18a AVR Shift Register.o
 
 .debug_frame    0x00000000       0xf8
  *(.debug_frame)
  .debug_frame   0x00000000       0xf8 AVR Shift Register.o
 
-.debug_str      0x00000000      0x246
+.debug_str      0x00000000      0x1fb
  *(.debug_str)
- .debug_str     0x00000000      0x246 AVR Shift Register.o
-                                0x27a (size before relaxing)
+ .debug_str     0x00000000      0x1fb AVR Shift Register.o
+                                0x22f (size before relaxing)
 
 .debug_loc      0x00000000      0x195
  *(.debug_loc)

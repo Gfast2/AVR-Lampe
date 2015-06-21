@@ -99,13 +99,21 @@ int main(void)
 	while(1)
 	{
 		
-		_delay_ms(100);
+		//_delay_ms(100);
 		
+		/*
 		dutyCycle += 5;
 		if(dutyCycle > 255)
 			dutyCycle = 127;							// 127.5 = 50%
-			
-		
+		*/
+		if(firstdigit > 7)
+			dutyCycle = (int)(255 * 1);
+		else if(firstdigit > 5)
+			dutyCycle = (int)(255 * 0.75);
+		else if(firstdigit > 3)
+			dutyCycle = (int)(255 * 0.55);
+		else
+			dutyCycle = 0;
 	}
 }
 
@@ -120,7 +128,7 @@ ISR(ADC_vect)
 	// target: 
 	//		readingValue > 48		-	Display : 0
 	//		readingValue 48 - 0		-	Display : 0 - 9
-	if (voltage_reading > 48)
+	if (voltage_reading > 45) // Try to tune it to the point really start to light up.
 	{
 		firstdigit = 0;//voltage_reading; 
 		//write_74HC595(LED_patterns[firstdigit]);
@@ -130,7 +138,7 @@ ISR(ADC_vect)
 		firstdigit = 18; // This is a special '8' with dot, to show the max. performance of LEDs
 		//write_74HC595(LED_patterns[firstdigit]);
 	}
-	else if(voltage_reading < 9.6) 
+	else if(voltage_reading < 9.6) // This block is really hard coded. Later find out the problem is caused by the contro PIN of LED driver board don't stable. Add a 4.7µF Cap the problem is all gone.
 		firstdigit = 9;
 	else if(voltage_reading < 14.4)
 		firstdigit = 8;
@@ -146,7 +154,7 @@ ISR(ADC_vect)
 		firstdigit = 3;
 	else if(voltage_reading < 43.2)
 		firstdigit = 2;
-	else if(voltage_reading <= 48)
+	else if(voltage_reading <= 45)
 		firstdigit = 1;
 		
 	write_74HC595(LED_patterns[firstdigit]);
