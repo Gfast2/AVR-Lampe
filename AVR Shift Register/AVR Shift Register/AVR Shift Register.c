@@ -50,10 +50,22 @@ uint8_t LED_patterns[20] =
 };
 
 
-// TODO : This Author is using interrupt to read ADC.
-//        I'd like to do a small research to figure out if he is using the same pin as mine.
-//        Beside, I should really read the ATTiny's datasheet about how it works.
-//        We should disable the Reset pin reset function. In oder to save a 10K resistor
+// This Author is using interrupt to read ADC.
+/* Before the voltage divider :
+ *		@ 0.75v		LEDs start to light up
+ *		@ 0.61v		lightness changes don't obviously
+ *		@ 14.9mv	voltage at maximum lightness (about 12V x 1.124A = 13.488W)
+ *
+ * After the voltage divider :
+ *		@ 230.9mv	LEDs start to light up
+ *		@ 200.0mv	lightness changes don't obviously (or maybe is @ 165mv,can't be located easily)
+ *		@   3.9mv	voltage at maximum lightness
+ *
+ * Attiny25 uses a 10bit ADC. So the voltage after voltage divider translated to number in programm (0 - 1023)
+ *		47.288		LEDs start to light up
+ *		40.960		lightness changes don't obviously (or maybe is 33.792 equal to @165mv)
+ *		 0.799		voltage at maximum lightness
+ */
 void initialise_ADC(void)
 {
 	ADCSRA |= 1<<ADEN | 1<<ADIE | 1<<ADPS0 | 1<<ADPS2;
@@ -104,8 +116,64 @@ ISR(ADC_vect)
 	voltage_reading = ADC;
 	//firstdigit = ((voltage_reading * 5000L / 1023)+500) / 1000;
 	// voltage_reading 0 ~ 1023.
-	firstdigit = ((voltage_reading * 10000L / 1023)+500) / 1000; //12V through voltage divider have a max. voltage 3.69V. equal to 755.71
+	//firstdigit = ((voltage_reading * 5000L / 1023)+500) / 1000; //12V through voltage divider have a max. voltage 3.69V. equal to 755.71
+	// target: 
+	//		readingValue > 48		-	Display : 0
+	//		readingValue 48 - 0		-	Display : 0 - 9
+	if (voltage_reading > 48)
+	{
+		firstdigit = 0;//voltage_reading; 
+		//write_74HC595(LED_patterns[firstdigit]);
+	}	
+	else if(voltage_reading < 4.8) 
+	{
+		firstdigit = 18; // This is a special '8' with dot, to show the max. performance of LEDs
+		//write_74HC595(LED_patterns[firstdigit]);
+	}
+	else if(voltage_reading < 9.6) 
+		firstdigit = 9;
+	else if(voltage_reading < 14.4)
+		firstdigit = 8;
+	else if(voltage_reading < 19.2)
+		firstdigit = 7;
+	else if(voltage_reading < 24)
+		firstdigit = 6;
+	else if(voltage_reading < 28.8)
+		firstdigit = 5;
+	else if(voltage_reading < 33.6)
+		firstdigit = 4;
+	else if(voltage_reading < 38.4)
+		firstdigit = 3;
+	else if(voltage_reading < 43.2)
+		firstdigit = 2;
+	else if(voltage_reading <= 48)
+		firstdigit = 1;
+		
 	write_74HC595(LED_patterns[firstdigit]);
+	
+	
+	/*
+	
+	else // on theory this should be the last possibility
+	{
+		for(int i = 0; i < 10; i++)
+		{
+			int k = (int) (48 - 4.8*i);
+			if (voltage_reading > k)
+			{
+				firstdigit = k;
+				write_74HC595(LED_patterns[firstdigit]);
+				break;
+			}
+			
+		}
+		
+	}
+	*/
+	
+		//firstdigit = (int) map(voltage_reading, 48,0, 0, 9);
+	
+	//write_74HC595(LED_patterns[firstdigit]);
 	// TODO :   Add a variable to send back to main loop, in order to drive FAN with the Speed it should using.
 	ADCSRA |= 1<<ADSC;
 }
