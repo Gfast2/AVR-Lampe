@@ -37,7 +37,7 @@ SUBDIRS :=
 
 # Add inputs and outputs from these tool invocations to the build variables 
 C_SRCS +=  \
-../AVR\ Shift\ Register.c
+../attiny25_74HC595.c
 
 
 PREPROCESSING_SRCS += 
@@ -47,16 +47,16 @@ ASM_SRCS +=
 
 
 OBJS +=  \
-AVR\ Shift\ Register.o
+attiny25_74HC595.o
 
 OBJS_AS_ARGS +=  \
-"AVR Shift Register.o"
+attiny25_74HC595.o
 
 C_DEPS +=  \
-AVR\ Shift\ Register.d
+attiny25_74HC595.d
 
 C_DEPS_AS_ARGS +=  \
-"AVR Shift Register.d"
+attiny25_74HC595.d
 
 OUTPUT_FILE_PATH +=AVR\ Shift\ Register.elf
 
@@ -72,7 +72,7 @@ LINKER_SCRIPT_DEP+=
 
 
 # AVR32/GNU C Compiler
-./AVR\ Shift\ Register.o: .././AVR\ Shift\ Register.c
+./attiny25_74HC595.o: .././attiny25_74HC595.c
 	@echo Building file: $<
 	@echo Invoking: AVR/GNU C Compiler : 4.8.1
 	$(QUOTE)C:\Program Files (x86)\Atmel\Atmel Toolchain\AVR8 GCC\Native\3.4.1061\avr8-gnu-toolchain\bin\avr-gcc.exe$(QUOTE)  -x c -funsigned-char -funsigned-bitfields -DDEBUG  -O1 -ffunction-sections -fdata-sections -fpack-struct -fshort-enums -g2 -Wall -mmcu=attiny25 -c -std=gnu99 -MD -MP -MF "$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -MT"$(@:%.o=%.o)"   -o "$@" "$<" 

@@ -2,5 +2,5 @@
 # Automatically-generated file. Do not edit or delete the file
 ################################################################################
 
-AVR Shift Register.c
+attiny25_74HC595.c
 

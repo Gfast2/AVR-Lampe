@@ -11,7 +11,7 @@
 
 #include <avr/io.h>
 #include <avr/interrupt.h>
-#include "attiny84_74HC595.h"
+#include "attiny25_74HC595.h"
 #include <util/delay.h>
 
 volatile uint16_t voltage_reading;
